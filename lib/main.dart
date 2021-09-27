@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import './pages/cart_page.dart';
 
 import 'package:shop_app/pages/product_details_page.dart';
 import 'package:shop_app/pages/products_overview_page.dart';
 import './providers/products.dart';
+import './providers/cart.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,19 +17,32 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (ctx) => Products(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => Products(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => Cart(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: ProductsOverviewPage(),
         title: 'Shop App',
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
-          accentColor: Colors.amber,
-          fontFamily: GoogleFonts.lato().fontFamily,
-        ),
+            primarySwatch: Colors.indigo,
+            accentColor: Colors.amber,
+            fontFamily: GoogleFonts.lato().fontFamily,
+            accentTextTheme: TextTheme(
+                title: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ))),
         routes: {
           ProductDetailsPage.routeName: (ctx) => ProductDetailsPage(),
+          CartPage.routeName: (ctx) => CartPage(),
         },
       ),
     );

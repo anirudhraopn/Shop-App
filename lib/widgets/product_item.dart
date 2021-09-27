@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/product.dart';
+import '../providers/cart.dart';
 
 import '../pages/product_details_page.dart';
 
@@ -21,7 +22,8 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -50,20 +52,24 @@ class ProductItem extends StatelessWidget {
             )),
         footer: GridTileBar(
           backgroundColor: Colors.black54,
-          leading: IconButton(
-            icon: Icon(
-                product.isFavourite ? Icons.favorite : Icons.favorite_border),
-            color: Theme.of(context).accentColor,
-            tooltip: 'Add to Favourites',
-            onPressed: () {
-              product.toggleFavourite();
-            },
+          leading: Consumer<Product>(
+            builder: (ctx, product, child) => IconButton(
+              icon: Icon(
+                  product.isFavourite ? Icons.favorite : Icons.favorite_border),
+              color: Theme.of(context).accentColor,
+              tooltip: 'Add to Favourites',
+              onPressed: () {
+                product.toggleFavourite();
+              },
+            ),
           ),
-          title: Text(
-            '\$${product.price}',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
+          title: FittedBox(
+            child: Text(
+              '\$${product.price}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+              ),
             ),
           ),
           trailing: IconButton(
@@ -72,7 +78,9 @@ class ProductItem extends StatelessWidget {
               color: Theme.of(context).accentColor,
             ),
             tooltip: 'Add to Cart',
-            onPressed: () {},
+            onPressed: () {
+              cart.addProduct(product.id, product.title, product.price, 1);
+            },
           ),
         ),
       ),
