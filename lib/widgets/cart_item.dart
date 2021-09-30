@@ -64,9 +64,10 @@ class CartItem extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           subtitle: Text(
-            'Quantity: $quantity',
+            'Price per item: $price',
             style: Theme.of(context).textTheme.subtitle1,
           ),
+          trailing: Text('Qty:$quantity'),
         ),
       ),
     );

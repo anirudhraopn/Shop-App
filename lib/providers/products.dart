@@ -50,7 +50,7 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  @override
+  // @override
   void addProduct() {
     notifyListeners();
   }

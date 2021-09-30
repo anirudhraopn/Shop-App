@@ -22,7 +22,51 @@ class ProductDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(loadedProduct.title),
-        centerTitle: false,
+        // centerTitle: false,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: Image.network(
+                loadedProduct.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: Text(
+                '\$${loadedProduct.price}',
+                style: TextStyle(
+                  color: Colors.grey.shade800,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+              ),
+              width: double.infinity,
+              child: Text(
+                '${loadedProduct.description}',
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

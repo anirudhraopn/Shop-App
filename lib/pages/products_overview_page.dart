@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/widgets/main_drawer.dart';
 
 // import 'package:shop_app/widgets/product_item.dart';
 // import '../providers/product.dart';
@@ -9,6 +10,7 @@ import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 
 class ProductsOverviewPage extends StatefulWidget {
+  static const routeName = '/';
   //const ({ Key? key }) : super(key: key);
 
   @override
@@ -21,9 +23,10 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   Widget build(BuildContext context) {
     //final cart = Provider.of<Cart>(context);
     return Scaffold(
+      drawer: MainDrawer(),
       appBar: AppBar(
         title: Text(
-          'Shop App',
+          'My Shop',
           style: TextStyle(fontSize: 25),
         ),
         centerTitle: true,
@@ -65,7 +68,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           ),
         ],
       ),
-      body: ProductsGrid(_showOnlyFavs),
+      body: ProductsGrid(showFavs: _showOnlyFavs),
     );
   }
 }
