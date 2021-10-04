@@ -34,7 +34,7 @@ class CartPage extends StatelessWidget {
                     Spacer(),
                     Chip(
                       backgroundColor: Theme.of(context).primaryColor,
-                      label: Text('${cart.totalAmount}',
+                      label: Text('${cart.totalAmount.toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 20,
                             color: Theme.of(context).accentColor,

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'product.dart';
 
@@ -51,7 +54,50 @@ class Products with ChangeNotifier {
   }
 
   // @override
-  void addProduct() {
+  Future<void> addProduct(Product product) {
+    const url =
+        'https://shop-app-35928-default-rtdb.firebaseio.com/products.json';
+    return http
+        .post(url,
+            body: json.encode({
+              'title': product.title,
+              'price': product.price,
+              'description': product.description,
+              'imageURL': product.imageUrl,
+            }))
+        .then((response) {
+      print(response.body);
+      final newProduct = Product(
+          description: product.description,
+          id: json.decode(response.body)['name'],
+          imageUrl: product.imageUrl,
+          price: product.price,
+          title: product.title);
+      _items.add(newProduct);
+      notifyListeners();
+    }).catchError((error) {
+      throw error;
+    });
+  }
+
+  void updateproduct(String id, Product newProd) {
+    print(id);
+    final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    if (prodIndex >= 0) {
+      newProd = Product(
+        description: newProd.description,
+        id: id,
+        imageUrl: newProd.imageUrl,
+        price: newProd.price,
+        title: newProd.title,
+      );
+      _items[prodIndex] = newProd;
+    }
+    notifyListeners();
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 }

@@ -65,7 +65,7 @@ class ProductItem extends StatelessWidget {
           ),
           title: FittedBox(
             child: Text(
-              '\$${product.price}',
+              '\$${product.price.toStringAsFixed(2)}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -80,6 +80,24 @@ class ProductItem extends StatelessWidget {
             tooltip: 'Add to Cart',
             onPressed: () {
               cart.addProduct(product.id, product.title, product.price, 1);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      cart.removeSingleItem(product.id);
+                    },
+                  ),
+                  content: Text(
+                    'Added to cart!',
+                    // textAlign: TextAlign.center,
+                  ),
+                  duration: Duration(
+                    seconds: 2,
+                  ),
+                ),
+              );
             },
           ),
         ),

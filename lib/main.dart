@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/pages/edit_product_page.dart';
 import 'package:shop_app/pages/orders_page.dart';
+import 'package:shop_app/pages/user_products_page.dart';
 import 'package:shop_app/providers/orders.dart';
 import './pages/cart_page.dart';
 
@@ -49,6 +51,8 @@ class MyApp extends StatelessWidget {
           ProductDetailsPage.routeName: (ctx) => ProductDetailsPage(),
           CartPage.routeName: (ctx) => CartPage(),
           OrdersPage.routeName: (ctx) => OrdersPage(),
+          UserProductsPage.routeName: (ctx) => UserProductsPage(),
+          EditProductPage.routeName: (ctx) => EditProductPage(),
         },
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/pages/orders_page.dart';
 import 'package:shop_app/pages/products_overview_page.dart';
+import 'package:shop_app/pages/user_products_page.dart';
 
 class MainDrawer extends StatelessWidget {
   // const MainDrawer({ Key? key }) : super(key: key);
@@ -50,6 +51,24 @@ class MainDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.of(context).pushReplacementNamed(OrdersPage.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(
+              Icons.edit,
+              color: Theme.of(context).primaryColorDark,
+            ),
+            title: Text(
+              'Manage Products',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(UserProductsPage.routeName);
             },
           )
         ],

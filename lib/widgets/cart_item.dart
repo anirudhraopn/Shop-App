@@ -39,6 +39,44 @@ class CartItem extends StatelessWidget {
         ),
       ),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (dir) {
+        return showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text(
+                    'Are you sure?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  content:
+                      Text('Do you want to delete the item from the cart?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop(false);
+                      },
+                      child: Text(
+                        'No',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop(true);
+                      },
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ));
+      },
       onDismissed: (direction) {
         cart.removeItem(prodId);
       },
