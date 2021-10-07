@@ -43,19 +43,7 @@ class CartPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       width: 80,
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                            primary: Theme.of(context).primaryColor),
-                        onPressed: () {
-                          Provider.of<Orders>(context, listen: false).addOrder(
-                              cart.items.values.toList(), cart.totalAmount);
-                          cart.clearCart();
-                        },
-                        child: Text(
-                          'PLACE ORDER',
-                          softWrap: true,
-                        ),
-                      ),
+                      child: OrderButton(),
                     )
                   ],
                 ),
@@ -80,5 +68,46 @@ class CartPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  // const OrderButton({
+  //   Key key,
+  // }) : super(key: key);
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context);
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : TextButton(
+            style:
+                TextButton.styleFrom(primary: Theme.of(context).primaryColor),
+            onPressed: (cart.totalAmount <= 0 || _isLoading)
+                ? null
+                : () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    await Provider.of<Orders>(context, listen: false)
+                        .addOrder(cart.items.values.toList(), cart.totalAmount);
+                    cart.clearCart();
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+            child: Text(
+              'PLACE ORDER',
+              softWrap: true,
+            ),
+          );
   }
 }

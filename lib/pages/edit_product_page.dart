@@ -25,6 +25,7 @@ class _EditProductPageState extends State<EditProductPage> {
     imageUrl: '',
     price: 0,
     title: '',
+    // isFavourite: false,
   );
 
   // @override
@@ -100,7 +101,7 @@ class _EditProductPageState extends State<EditProductPage> {
     _isInit = false;
   }
 
-  void _saveForm(String prodID) {
+  Future<void> _saveForm(String prodID) async {
     // print(_editedProduct.title);
     final _isValid = _form.currentState.validate();
     if (!_isValid) {
@@ -110,12 +111,15 @@ class _EditProductPageState extends State<EditProductPage> {
     setState(() {
       _isLoading = true;
     });
+
     if (productId == null) {
-      Provider.of<Products>(
-        context,
-        listen: false,
-      ).addProduct(_editedProduct).catchError((error) {
-        return showDialog<Null>(
+      try {
+        await Provider.of<Products>(
+          context,
+          listen: false,
+        ).addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog<Null>(
             context: context,
             builder: (ctx) => AlertDialog(
                   actions: [
@@ -125,17 +129,17 @@ class _EditProductPageState extends State<EditProductPage> {
                         },
                         child: Text('Okay'))
                   ],
-                  title: Text('There was an error'),
-                  content: Text('Something went wrong!!'),
+                  title: Text('An error occurred!'),
+                  content: Text('Something went wrong.'),
                 ));
-      }).then((_) {
+      } finally {
         setState(() {
           _isLoading = false;
         });
         Navigator.of(context).pop();
-      });
+      }
     } else {
-      Provider.of<Products>(
+      await Provider.of<Products>(
         context,
         listen: false,
       ).updateproduct(prodID, _editedProduct);
@@ -189,6 +193,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             imageUrl: _editedProduct.imageUrl,
                             price: _editedProduct.price,
                             title: val,
+                            isFavourite: _editedProduct.isFavourite,
                           );
                         },
                         validator: (val) {
@@ -217,6 +222,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             imageUrl: _editedProduct.imageUrl,
                             price: double.parse(val),
                             title: _editedProduct.title,
+                            isFavourite: _editedProduct.isFavourite,
                           );
                         },
                         validator: (val) {
@@ -247,6 +253,7 @@ class _EditProductPageState extends State<EditProductPage> {
                             imageUrl: _editedProduct.imageUrl,
                             price: _editedProduct.price,
                             title: _editedProduct.title,
+                            isFavourite: _editedProduct.isFavourite,
                           );
                         },
                         validator: (val) {
@@ -302,6 +309,7 @@ class _EditProductPageState extends State<EditProductPage> {
                                   imageUrl: val,
                                   price: _editedProduct.price,
                                   title: _editedProduct.title,
+                                  isFavourite: _editedProduct.isFavourite,
                                 );
                               },
                               validator: (val) {
