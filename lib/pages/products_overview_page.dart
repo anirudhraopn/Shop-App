@@ -11,7 +11,7 @@ import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 
 class ProductsOverviewPage extends StatefulWidget {
-  static const routeName = '/';
+  static const routeName = '/products-overview';
   //const ({ Key? key }) : super(key: key);
 
   @override

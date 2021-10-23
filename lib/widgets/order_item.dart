@@ -19,36 +19,44 @@ class _OrderItemState extends State<OrderItem> {
   bool _expanded = false;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      margin: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(
-              '\$${widget.orderItems.amount}',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      height: _expanded
+          ? min(widget.orderItems.products.length * 30.0 + 110, 250)
+          : 115,
+      child: Card(
+        elevation: 5,
+        margin: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                '\$${widget.orderItems.amount}',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
+                DateFormat('dd/MM/yyyy hh:mm')
+                    .format(widget.orderItems.dateTime),
+              ),
+              trailing: IconButton(
+                icon: Icon(
+                  _expanded ? Icons.expand_less : Icons.expand_more,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
               ),
             ),
-            subtitle: Text(
-              DateFormat('dd/MM/yyyy hh:mm').format(widget.orderItems.dateTime),
-            ),
-            trailing: IconButton(
-              icon: Icon(
-                _expanded ? Icons.expand_less : Icons.expand_more,
-              ),
-              onPressed: () {
-                setState(() {
-                  _expanded = !_expanded;
-                });
-              },
-            ),
-          ),
-          if (_expanded)
-            Container(
-              height: min(widget.orderItems.products.length * 20.0 + 10, 100),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              height: _expanded
+                  ? min(widget.orderItems.products.length * 20.0 + 10, 100)
+                  : 0,
               margin: const EdgeInsets.all(10),
               child: ListView(
                 children: widget.orderItems.products
@@ -74,7 +82,8 @@ class _OrderItemState extends State<OrderItem> {
                     .toList(),
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

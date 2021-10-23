@@ -42,6 +42,11 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  final String authToken;
+  final String userId;
+
+  Products(this.authToken, this.userId, this._items);
+
   List<Product> get items {
     return [..._items];
   }
@@ -56,8 +61,8 @@ class Products with ChangeNotifier {
 
   // @override
   Future<void> addProduct(Product product) async {
-    const url =
-        'https://shop-app-35928-default-rtdb.firebaseio.com/products.json';
+    var url =
+        'https://shop-app-35928-default-rtdb.firebaseio.com/products/.json?auth=$authToken';
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -65,10 +70,11 @@ class Products with ChangeNotifier {
             'price': product.price,
             'description': product.description,
             'imageURL': product.imageUrl,
-            'isFavourite': product.isFavourite,
+            'creatorId': userId,
           }));
 
       print(response.body);
+      final id = json.decode(response.body)['name'];
       final newProduct = Product(
           description: product.description,
           id: json.decode(response.body)['name'],
@@ -76,19 +82,33 @@ class Products with ChangeNotifier {
           price: product.price,
           title: product.title);
       _items.add(newProduct);
+      url =
+          'https://shop-app-35928-default-rtdb.firebaseio.com/user-favourites/$userId/$id.json?auth=$authToken';
+      final favResponse = await http.put(
+        url,
+        body: json.encode(false),
+      );
       notifyListeners();
     } catch (error) {
       throw error;
     }
   }
 
-  Future<void> fetchData() async {
-    const url =
-        'https://shop-app-35928-default-rtdb.firebaseio.com/products.json';
+  Future<void> fetchData([bool filterByUser = false]) async {
+    var filter = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url =
+        'https://shop-app-35928-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filter';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      // print(response.body);
+      if (extractedData == null) {
+        return;
+      }
+      url =
+          'https://shop-app-35928-default-rtdb.firebaseio.com/user-favourites/$userId.json?auth=$authToken';
+      final favResponse = await http.get(url);
+      final favouriteData = json.decode(favResponse.body);
+      print(favouriteData);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -97,7 +117,8 @@ class Products with ChangeNotifier {
           imageUrl: prodData['imageURL'],
           price: prodData['price'],
           title: prodData['title'],
-          isFavourite: prodData['isFavourite'],
+          isFavourite: favouriteData == null ? false : favouriteData[prodId],
+          authToken: authToken,
         ));
       });
       _items = loadedProducts;
@@ -112,7 +133,7 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url =
-          'https://shop-app-35928-default-rtdb.firebaseio.com/products/$id.json';
+          'https://shop-app-35928-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
       http.patch(url,
           body: json.encode({
             'title': newProd.title,
@@ -127,6 +148,7 @@ class Products with ChangeNotifier {
         price: newProd.price,
         title: newProd.title,
         isFavourite: newProd.isFavourite,
+        authToken: authToken,
       );
       _items[prodIndex] = newProduct;
     }
@@ -136,17 +158,21 @@ class Products with ChangeNotifier {
   Future<void> deleteProduct(String id) async {
     final existingProdIndex = _items.indexWhere((prod) => prod.id == id);
     var existingProduct = _items[existingProdIndex];
-    final url =
-        'https://shop-app-35928-default-rtdb.firebaseio.com/products/$id.json';
+    var url =
+        'https://shop-app-35928-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
     _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
     final response = await http.delete(url);
+
     if (response.statusCode >= 400) {
       _items.insert(existingProdIndex, existingProduct);
       notifyListeners();
       throw HttpExceptions('Couldn\'t delete the product!');
     } else {
       existingProduct = null;
+      url =
+          'https://shop-app-35928-default-rtdb.firebaseio.com/user-favourites/$userId/$id.json?auth=$authToken';
+      final favResponse = await http.delete(url);
     }
   }
 }

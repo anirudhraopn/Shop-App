@@ -11,6 +11,7 @@ class Product with ChangeNotifier {
   final String imageUrl;
   final double price;
   bool isFavourite = false;
+  final String authToken;
 
   Product({
     @required this.description,
@@ -19,17 +20,17 @@ class Product with ChangeNotifier {
     @required this.price,
     @required this.title,
     this.isFavourite = false,
+    this.authToken,
   });
 
-  void toggleFavourite() async {
+  void toggleFavourite(String userId) async {
     final url =
-        'https://shop-app-35928-default-rtdb.firebaseio.com/products/$id.json';
+        'https://shop-app-35928-default-rtdb.firebaseio.com/user-favourites/$userId/$id.json?auth=$authToken';
     final oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
     try {
-      final response = await http.patch(url,
-          body: json.encode({'isFavourite': isFavourite}));
+      final response = await http.put(url, body: json.encode(isFavourite));
       if (response.statusCode >= 400) {
         throw HttpExceptions('There was an error!');
       }
