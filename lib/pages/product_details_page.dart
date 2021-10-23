@@ -4,7 +4,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/products.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:shop_app/pages/show_product_image.dart';
+
+import '../providers/products.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   // const ProductDetailsPage({ Key? key }) : super(key: key);
@@ -30,7 +33,7 @@ class ProductDetailsPage extends StatelessWidget {
         slivers: [
           SliverAppBar(
             // backgroundColor: Theme.of(context).accentColor,
-            
+
             expandedHeight: 300,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
@@ -39,26 +42,33 @@ class ProductDetailsPage extends StatelessWidget {
               ),
               background: Hero(
                 tag: loadedProduct.id,
-                child: Stack(children: [
-                  Center(
-                    child: Image.network(
-                      loadedProduct.imageUrl,
-                      fit: BoxFit.cover,
-                      width: 700,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => ShowProductImage(loadedProduct.id)));
+                  },
+                  child: Stack(children: [
+                    Center(
+                      child: Image.network(
+                        loadedProduct.imageUrl,
+                        fit: BoxFit.cover,
+                        width: 700,
+                      ),
                     ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight,
-                          colors: [
-                            Colors.black.withOpacity(0.8),
-                            Colors.black.withOpacity(0),
-                          ]),
-                    ),
-                  )
-                ]),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight,
+                            // stops: [],
+                            colors: [
+                              Colors.black.withOpacity(0.8),
+                              Colors.black.withOpacity(0),
+                            ]),
+                      ),
+                    )
+                  ]),
+                ),
               ),
             ),
           ),

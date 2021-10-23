@@ -7,6 +7,7 @@ import 'package:shop_app/helpers/custom_route.dart';
 import 'package:shop_app/pages/auth_page.dart';
 import 'package:shop_app/pages/edit_product_page.dart';
 import 'package:shop_app/pages/orders_page.dart';
+import 'package:shop_app/pages/show_product_image.dart';
 import 'package:shop_app/pages/splash_page.dart';
 import 'package:shop_app/pages/user_products_page.dart';
 import 'package:shop_app/providers/auth.dart';
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
             OrdersPage.routeName: (ctx) => OrdersPage(),
             UserProductsPage.routeName: (ctx) => UserProductsPage(),
             EditProductPage.routeName: (ctx) => EditProductPage(),
+            // ShowProductImage.routeName:(ctx)=>ShowProductImage(),
           },
         ),
       ),
